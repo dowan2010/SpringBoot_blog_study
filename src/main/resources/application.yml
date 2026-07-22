@@ -1,7 +1,7 @@
 spring:
   sql:
     init:
-      mode: never
+      mode: always
   jpa:
     show-sql: true
     properties:
@@ -16,3 +16,10 @@ spring:
   h2:
     console:
       enabled: true
+  ai:
+    google:
+      genai:
+        api-key: AIzaSyClicR58WAZfFAL3hw1hBay_Xc_67tNagg
+        chat:
+          options:
+            model: gemini-3.5-flash

@@ -1,4 +1,4 @@
-package com.example.springboot_study.save;
+package com.example.springboot_study.service;
 
 import com.example.springboot_study.domain.Article;
 import com.example.springboot_study.dto.AddArticleRequest;

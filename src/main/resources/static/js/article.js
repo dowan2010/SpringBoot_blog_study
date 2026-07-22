@@ -1,0 +1,123 @@
+const deleteButton = document.getElementById('delete-btn')
+
+if (deleteButton) {
+    deleteButton.addEventListener('click', 가event => {
+        let id = document.getElementById('article-id').value;
+        fetch(`/api/articles/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => {
+                alert('삭제가 완료되었습니다.');
+                location.replace('/articles')
+            })
+    })
+}
+
+const modifyButton = document.getElementById('modify-btn');
+
+if(modifyButton) {
+    modifyButton.addEventListener('click', event => {
+        let params = new URLSearchParams(location.search);
+        let id = params.get('id');
+
+        fetch(`/api/articles/${id}`, {
+            method: 'PUT',
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value
+            })
+        })
+            .then(() => {
+                alert('수정이 완료되었습니다.')
+                location.replace(`/articles/${id}`)
+            })
+    })
+}
+
+const aiAssistButton = document.getElementById('ai-assist-btn');
+
+if (aiAssistButton) {
+    aiAssistButton.addEventListener('click', event => {
+        $('#aiAssistModal').modal('show');
+        document.getElementById('ai-suggestion').style.display = 'none';
+        document.getElementById('ai-question').value = '';
+    });
+}
+
+const getSuggestionButton = document.getElementById('get-suggestion-btn');
+
+if (getSuggestionButton) {
+    getSuggestionButton.addEventListener('click', event => {
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const question = document.getElementById('ai-question').value;
+
+        if (!question.trim()) {
+            alert('고민되는 내용을 입력해주세요.');
+            return;
+        }
+
+        // 로딩 표시
+        document.getElementById('ai-loading').style.display = 'block';
+        document.getElementById('ai-suggestion').style.display = 'none';
+
+        const body = JSON.stringify({
+            title: title,
+            content: content,
+            question: question
+        });
+
+        fetch('/api/ai-suggestions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: body
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('ai-loading').style.display = 'none';
+
+                const suggestionContent = document.getElementById('ai-suggestion-content');
+
+                let html = '';
+                if (data.suggestion && data.suggestion.length > 0) {
+                    html += '<ul class="list-group">';
+                    data.suggestion.forEach((suggestion, index) => {
+                        html += `<li class="list-group-item suggestion-item" style="cursor: pointer;" data-suggestion="${suggestion.replace(/"/g, '&quot;')}" title="클릭하면 본문에 추가됩니다">
+                                ${suggestion}
+                                <small class="text-muted float-right">클릭하여 추가</small>
+                             </li>`;
+                    });
+                    html += '</ul>';
+                }
+
+                suggestionContent.innerHTML = html;
+                document.getElementById('ai-suggestion').style.display = 'block';
+            })
+    });
+}
+
+const suggestionContent = document.getElementById('ai-suggestion-content');
+if (suggestionContent) {
+    suggestionContent.addEventListener('click', function(e) {
+        const suggestionItem = e.target.closest('.suggestion-item');
+        if (suggestionItem) {
+            const suggestion = suggestionItem.getAttribute('data-suggestion');
+            const contentTextarea = document.getElementById('content');
+
+            const currentContent = contentTextarea.value;
+            const separator = currentContent && !currentContent.endsWith('\n') ? '\n\n' : '';
+            contentTextarea.value = currentContent + separator + suggestion;
+
+            $('#aiAssistModal').modal('hide');
+
+            contentTextarea.focus();
+        }
+    });
+}

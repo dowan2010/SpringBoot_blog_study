@@ -2,10 +2,9 @@ package com.example.springboot_study.controller;
 
 
 import com.example.springboot_study.domain.Article;
-import com.example.springboot_study.dto.AddArticleRequest;
-import com.example.springboot_study.dto.ArticleResponse;
-import com.example.springboot_study.dto.UpdateArticleRequest;
-import com.example.springboot_study.save.BlogService;
+import com.example.springboot_study.dto.*;
+import com.example.springboot_study.service.BlogService;
+import com.example.springboot_study.service.WritingAssistantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ public class BlogApiController {
 
     // 의존성 주입
     private final BlogService blogService;
+    private final WritingAssistantService writingAssistantService;
 
     @PostMapping("/api/articles")
     // ResponseEntity<Article> HTTP 응답 전체를 표현하는 객체
@@ -78,6 +78,13 @@ public class BlogApiController {
             return ResponseEntity.ok()
                     .body(updatedArticle);
 
+    }
+
+    @PostMapping("/api/ai-suggestions")
+    public ResponseEntity<WritingSuggestionResponse> writingAssist(@RequestBody WritingSuggestionRequest request) {
+        WritingSuggestionResponse response = writingAssistantService.getWritingAssist(request);
+
+        return ResponseEntity.ok().body(response);
     }
 }
 
