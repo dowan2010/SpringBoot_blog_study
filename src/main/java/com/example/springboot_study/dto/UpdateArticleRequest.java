@@ -16,4 +16,10 @@ public class UpdateArticleRequest {
     // 수정 API용 DTO
     private String title;
     private String content;
+    private String imageUrl;
+
+    public UpdateArticleRequest(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

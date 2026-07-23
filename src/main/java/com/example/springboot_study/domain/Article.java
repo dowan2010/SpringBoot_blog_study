@@ -35,17 +35,22 @@ public class Article {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // 객체 생성 패턴 - 기본 생성자
     @Builder
-    public Article(String title, String content) {
+    public Article(String title, String content, String imageUrl) {
         this.title = title;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     // 글 제목/내용 수정 — JPA 변경 감지로 UPDATE 자동 실행
-    public void update(String title, String content) {
+    public void update(String title, String content, String imageUrl) {
         this.title = title;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     @CreatedDate

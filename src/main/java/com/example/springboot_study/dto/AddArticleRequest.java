@@ -16,6 +16,7 @@ public class AddArticleRequest {
     // 선언
     private String title;
     private String content;
+    private String imageUrl;
 
     // DTO(요청 데이터)를 데이터베이스 저장용 Article 엔티티 객체로 변환
     public Article toEntity() {
@@ -23,6 +24,7 @@ public class AddArticleRequest {
         return Article.builder()
                 .title(title)
                 .content(content)
+                .imageUrl(imageUrl)
                 .build();
     }
 }
